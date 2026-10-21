@@ -1,3 +1,7 @@
+## 1.2.0
+
+- Lives where it belongs: Go live → Make reachable → VPN and the dashboard tile – no own sidebar entry any more (Hostwerk 3.0+); the full page stays under Extensions → Open and can be pinned in the sidebar settings. / Steckt jetzt dort, wo sie hingehört: Livebetrieb → Erreichbar machen → VPN und Übersichtskachel – kein eigener Seitenleisten-Eintrag mehr (Hostwerk 3.0+); die ganze Seite bleibt unter Erweiterungen → Öffnen und lässt sich in den Seitenleisten-Einstellungen anheften.
+
 ## 1.1.0
 
 - New access step by step: who → device type → reach and end → QR code or file with the steps for that device (Android, iPhone/iPad, Windows, Mac, Linux). / Neuer Zugang Schritt für Schritt: Wer → Geräteart → Reichweite und Ende → QR-Code oder Datei mit den Schritten für dieses Gerät.

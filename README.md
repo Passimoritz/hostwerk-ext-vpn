@@ -11,6 +11,7 @@ and updates and reports problems in one go. Plus Tailscale (with Headscale), Zer
 
 ## What it does
 
+- **Where:** Go live → Make reachable → VPN and the dashboard tile – no own sidebar entry since 1.2.0; the full page stays under Extensions → Open
 - **State at the top:** running or off, address from outside, port in the router, WireGuard version, what runs by itself
   – and findings with a button that fixes them (start, forward, settings …)
 - **New access in four steps:** who → which device (Android, iPhone/iPad, Windows, Mac, Linux) → what it may reach and

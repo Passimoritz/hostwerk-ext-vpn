@@ -11,6 +11,7 @@ und meldet Probleme gebündelt. Dazu Tailscale (mit Headscale), ZeroTier und Net
 
 ## Was sie kann
 
+- **Wo:** Livebetrieb → Erreichbar machen → VPN und Übersichtskachel – seit 1.2.0 ohne eigenen Seitenleisten-Eintrag; die ganze Seite bleibt unter Erweiterungen → Öffnen
 - **Zustand oben:** läuft oder aus, Adresse von außen, Port im Router, WireGuard-Version, was von selbst läuft – und
   Befunde mit einem Knopf, der sie behebt (Starten, Freigeben, Einstellungen …)
 - **Neuer Zugang in vier Schritten:** Wer → welches Gerät (Android, iPhone/iPad, Windows, Mac, Linux) → was darf er und

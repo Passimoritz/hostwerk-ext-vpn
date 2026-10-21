@@ -342,5 +342,11 @@ function VpnTile() {
 
 export default {
   pages: { main: VpnPage },
-  slots: { 'dashboard.tiles': [{ id: 'state', title: 'VPN', icon: Shield, size: 'third', Component: VpnTile }] },
+  slots: {
+    // Seit Hostwerk 3.0 (SDK 3.2) ohne eigenen Seitenleisten-Eintrag ("nav": false) – die ganze Seite als Reiter im passenden Bereich;
+    // Hostwerk blendet dabei ihren Titel aus (Reiter + Herkunftszeile sagen schon, was es ist), die Knöpfe bleiben
+    // Livebetrieb → Erreichbar machen, hinter „Fernzugriff“
+    'live.tabs': [{ id: 'vpn', title: 'VPN', icon: Shield, Component: VpnPage, group: 'erreichbar', after: 'fernzugriff', order: 40 }],
+    'dashboard.tiles': [{ id: 'state', title: 'VPN', icon: Shield, size: 'third', Component: VpnTile }],
+  },
 };
