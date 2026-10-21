@@ -1,0 +1,79 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Passimoritz/hostwerk-public/main/sdk/manifest.schema.json",
+  "id": "vpn",
+  "name": {
+    "de": "VPN-Zugang",
+    "en": "VPN access"
+  },
+  "description": {
+    "de": "WireGuard-Zugänge für deine Geräte und Freunde – statt vieler Portfreigaben nur eine: Schlüssel erzeugen, Konfiguration und QR-Code fürs Handy, Zugänge je Person (auch für Team-Mitglieder), WireGuard-Dienst starten und stoppen. Mit Anleitung, falls WireGuard fehlt, und Tailscale-Status, falls du das schon nutzt.",
+    "en": "WireGuard access for your devices and friends – one port forwarding instead of many: create keys, configuration and QR code for the phone, access per person (team members too), start and stop the WireGuard service. With a guide if WireGuard is missing, and the Tailscale status if you use that already."
+  },
+  "version": "1.0.0",
+  "author": "Hostwerk",
+  "homepage": "https://github.com/Passimoritz/hostwerk-ext-vpn",
+  "license": "MIT",
+  "icon": "icon.svg",
+  "banner": "banner.svg",
+  "color": "#16a34a",
+  "category": "network",
+  "hostwerk": ">=2.11.0",
+  "permissions": [
+    "native"
+  ],
+  "page": {
+    "title": {
+      "de": "VPN",
+      "en": "VPN"
+    },
+    "description": {
+      "de": "WireGuard-Zugänge für Geräte und Freunde.",
+      "en": "WireGuard access for devices and friends."
+    },
+    "icon": "shield"
+  },
+  "backend": "server/index.js",
+  "ui": "ui/index.js",
+  "provides": [
+    "vpn"
+  ],
+  "uses": [
+    "router",
+    "users"
+  ],
+  "synergies": [
+    {
+      "with": "team",
+      "title": {
+        "de": "VPN-Zugang je Team-Mitglied",
+        "en": "VPN access per team member"
+      },
+      "text": {
+        "de": "Mitglieder aus „Team & Rollen“ bekommen ihren eigenen WireGuard-Zugang.",
+        "en": "Members from “Team & roles” get their own WireGuard access."
+      }
+    },
+    {
+      "with": "router",
+      "title": {
+        "de": "Nur eine Portfreigabe",
+        "en": "Just one port forwarding"
+      },
+      "text": {
+        "de": "Den WireGuard-Port mit einem Klick im Router freigeben – alle Dienste dahinter bleiben privat.",
+        "en": "Forward the WireGuard port in the router with one click – every service behind it stays private."
+      }
+    },
+    {
+      "with": "file-share",
+      "title": {
+        "de": "Dateifreigabe nur übers VPN",
+        "en": "File share over the VPN only"
+      },
+      "text": {
+        "de": "SFTP ohne eigene Portfreigabe – Freunde verbinden sich über den VPN-Zugang.",
+        "en": "SFTP without its own port forwarding – friends connect through the VPN."
+      }
+    }
+  ]
+}
