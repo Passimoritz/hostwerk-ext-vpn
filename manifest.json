@@ -6,10 +6,10 @@
     "en": "VPN access"
   },
   "description": {
-    "de": "WireGuard-Zugänge für deine Geräte und Freunde – statt vieler Portfreigaben nur eine: Schlüssel erzeugen, Konfiguration und QR-Code fürs Handy, Zugänge je Person (auch für Team-Mitglieder), WireGuard-Dienst starten und stoppen. Mit Anleitung, falls WireGuard fehlt, und Tailscale-Status, falls du das schon nutzt.",
-    "en": "WireGuard access for your devices and friends – one port forwarding instead of many: create keys, configuration and QR code for the phone, access per person (team members too), start and stop the WireGuard service. With a guide if WireGuard is missing, and the Tailscale status if you use that already."
+    "de": "WireGuard-Zugänge für deine Geräte und Freunde – geführt eingerichtet (Name, Gerät, QR-Code oder Datei mit passender Anleitung), je Zugang „nur zu Hause“, „alles über zu Hause“ oder nur bestimmte Dienste, mit Ablaufdatum und Sperre. Läuft wartungsfrei: hält Adresse und Router-Freigabe aktuell, sperrt abgelaufene Zugänge, prüft Verbindungen und Updates und meldet Probleme gebündelt. Dazu Tailscale (mit Headscale), ZeroTier und NetBird im Blick.",
+    "en": "WireGuard access for your devices and friends – set up step by step (name, device, QR code or file with the right guide), per access “home only”, “all traffic through home” or only certain services, with an end date and lock. Runs maintenance-free: keeps the address and router forwarding up to date, locks expired accesses, checks connections and updates and reports problems in one go. Plus Tailscale (with Headscale), ZeroTier and NetBird at a glance."
   },
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "Hostwerk",
   "homepage": "https://github.com/Passimoritz/hostwerk-ext-vpn",
   "license": "MIT",
@@ -39,7 +39,8 @@
   ],
   "uses": [
     "router",
-    "users"
+    "users",
+    "dns"
   ],
   "synergies": [
     {
@@ -73,6 +74,17 @@
       "text": {
         "de": "SFTP ohne eigene Portfreigabe – Freunde verbinden sich über den VPN-Zugang.",
         "en": "SFTP without its own port forwarding – friends connect through the VPN."
+      }
+    },
+    {
+      "with": "dns",
+      "title": {
+        "de": "Eigene Domain für das VPN",
+        "en": "Your own domain for the VPN"
+      },
+      "text": {
+        "de": "Das VPN hält einen Namen wie vpn.example.com über die DNS-Verwaltung auf deiner aktuellen IP – Geräte brauchen nie eine neue Datei.",
+        "en": "The VPN keeps a name like vpn.example.com on your current IP through DNS management – devices never need a new file."
       }
     }
   ]
