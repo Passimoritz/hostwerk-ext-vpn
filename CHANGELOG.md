@@ -1,3 +1,7 @@
+## 1.2.1
+
+- WireGuard missing: one status line instead of a tall card – the install steps open in a dialog / WireGuard fehlt: eine Statuszeile statt einer hohen Karte – die Installationsschritte öffnen in einem Dialog
+
 ## 1.2.0
 
 - Lives where it belongs: Go live → Make reachable → VPN and the dashboard tile – no own sidebar entry any more (Hostwerk 3.0+); the full page stays under Extensions → Open and can be pinned in the sidebar settings. / Steckt jetzt dort, wo sie hingehört: Livebetrieb → Erreichbar machen → VPN und Übersichtskachel – kein eigener Seitenleisten-Eintrag mehr (Hostwerk 3.0+); die ganze Seite bleibt unter Erweiterungen → Öffnen und lässt sich in den Seitenleisten-Einstellungen anheften.

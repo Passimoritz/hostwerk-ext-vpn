@@ -105,20 +105,28 @@ function adminActions(st, setData, reload) {
   return { start: () => act(true), stop: () => act(false), restart };
 }
 
+/** WireGuard fehlt: eine Statuszeile mit den Knöpfen; die Schritte stehen im Dialog „So installierst du es …“. */
 function InstallCard({ wg, reload }) {
   const g = wg.guide || { steps: [] };
+  const [open, setOpen] = useState(false);
   return (
-    <div className="card">
-      <div className="card-head"><ShieldOff size={16} /><h3>WireGuard is missing</h3><span className="badge warn">{wg.supported ? 'not installed' : 'not supported here'}</span></div>
-      <div className="card-body stack">
-        <ol className="vpn-steps">{g.steps.map((s) => <li key={s}>{s}</li>)}</ol>
-        {g.command && <div className="row-tight vpn-cmd"><code className="grow ellipsis">{g.command}</code><Btn className="xs ghost icon" icon={Copy} title="Copy" aria-label="Copy" onClick={() => copy(g.command, 'Command')} /></div>}
-        <div className="row-tight">
-          <Btn className="sm" icon={ExternalLink} onClick={() => openExternal(g.url)}>wireguard.com/install</Btn>
-          <Btn className="sm ghost" icon={RotateCcw} onClick={() => reload()}>Check again</Btn>
-        </div>
-        <span className="small muted">You can already create accesses – the configurations work as soon as the tunnel runs.</span>
-      </div>
+    <div className="card vpn-missing">
+      <ShieldOff size={16} aria-hidden="true" />
+      <b>WireGuard is missing</b>
+      <span className="badge warn">{wg.supported ? 'not installed' : 'not supported here'}</span>
+      <InfoTip pop title="WireGuard is missing">You can already create accesses – the configurations work as soon as the tunnel runs.</InfoTip>
+      <span className="grow" />
+      {g.steps.length > 0 && <Btn className="sm" icon={ShieldCheck} onClick={() => setOpen(true)}>How to install it …</Btn>}
+      <Btn className="sm ghost" icon={RotateCcw} onClick={() => reload()}>Check again</Btn>
+      {open && (
+        <Modal title="Install WireGuard" onClose={() => setOpen(false)} footer={<><Btn onClick={() => setOpen(false)}>Close</Btn><Btn className="primary" icon={RotateCcw} onClick={() => { setOpen(false); reload(); }}>Check again</Btn></>}>
+          <div className="stack">
+            <ol className="vpn-steps">{g.steps.map((s) => <li key={s}>{s}</li>)}</ol>
+            {g.command && <div className="row-tight vpn-cmd"><code className="grow ellipsis">{g.command}</code><Btn className="xs ghost icon" icon={Copy} title="Copy" aria-label="Copy" onClick={() => copy(g.command, 'Command')} /></div>}
+            <div><Btn className="sm" icon={ExternalLink} onClick={() => openExternal(g.url)}>wireguard.com/install</Btn></div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

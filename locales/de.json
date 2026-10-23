@@ -372,5 +372,7 @@
   "The end date must be in the future.": "Das Ende muss in der Zukunft liegen.",
   "There is no DynDNS name in “Router & port forwarding” yet.": "In „Router & Portfreigaben“ gibt es noch keinen DynDNS-Namen.",
   "Keeping your own name up to date needs the extension “DNS management”.": "Den eigenen Namen aktuell halten braucht die Erweiterung „DNS-Verwaltung“.",
-  "VPN": "VPN"
+  "VPN": "VPN",
+  "How to install it …": "So installierst du es …",
+  "Install WireGuard": "WireGuard installieren"
 }

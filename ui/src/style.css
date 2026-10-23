@@ -73,3 +73,6 @@
 .vpn-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex: 0 0 auto; }
 .vpn-dot.on { background: var(--ok); }
 .vpn-dot.warn { background: var(--warn); }
+/* WireGuard fehlt: eine Zeile statt einer hohen Karte (Schritte im Dialog) */
+.vpn-missing { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sp-2); padding: var(--sp-2) var(--sp-3); }
+.vpn-missing > svg { color: var(--warn); }
