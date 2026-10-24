@@ -9,7 +9,7 @@
     "de": "WireGuard-Zugänge für deine Geräte und Freunde – geführt eingerichtet (Name, Gerät, QR-Code oder Datei mit passender Anleitung), je Zugang „nur zu Hause“, „alles über zu Hause“ oder nur bestimmte Dienste, mit Ablaufdatum und Sperre. Läuft wartungsfrei: hält Adresse und Router-Freigabe aktuell, sperrt abgelaufene Zugänge, prüft Verbindungen und Updates und meldet Probleme gebündelt. Dazu Tailscale (mit Headscale), ZeroTier und NetBird im Blick.",
     "en": "WireGuard access for your devices and friends – set up step by step (name, device, QR code or file with the right guide), per access “home only”, “all traffic through home” or only certain services, with an end date and lock. Runs maintenance-free: keeps the address and router forwarding up to date, locks expired accesses, checks connections and updates and reports problems in one go. Plus Tailscale (with Headscale), ZeroTier and NetBird at a glance."
   },
-  "version": "1.2.1",
+  "version": "1.2.2",
   "author": "Hostwerk",
   "homepage": "https://github.com/Passimoritz/hostwerk-ext-vpn",
   "license": "MIT",

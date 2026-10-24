@@ -1,3 +1,7 @@
+## 1.2.2
+
+- New animated icon and banner in the common Hostwerk style (isometric block). / Neues animiertes Symbol und Banner im gemeinsamen Hostwerk-Stil (isometrischer Block).
+
 ## 1.2.1
 
 - WireGuard missing: one status line instead of a tall card – the install steps open in a dialog / WireGuard fehlt: eine Statuszeile statt einer hohen Karte – die Installationsschritte öffnen in einem Dialog
