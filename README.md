@@ -7,7 +7,9 @@ guide), per access “home only”, “all traffic through home” or only certa
 maintenance-free: keeps the address and the router forwarding up to date, locks expired accesses, checks connections
 and updates and reports problems in one go. Plus Tailscale (with Headscale), ZeroTier and NetBird at a glance.
 
-[Deutsch](README.de.md) · An official [Hostwerk](https://github.com/Passimoritz/hostwerk-public) extension (SDK 2.7, native extension)
+[Deutsch](README.de.md) · An official [Hostwerk](https://github.com/Passimoritz/hostwerk-public) extension (native extension, Hostwerk 2.11 or newer)
+
+![Screenshot](docs/screenshot.png)
 
 ## What it does
 

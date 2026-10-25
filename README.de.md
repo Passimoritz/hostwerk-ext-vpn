@@ -7,7 +7,9 @@ Anleitung), je Zugang „nur zu Hause“, „alles über zu Hause“ oder nur be
 Läuft wartungsfrei: hält Adresse und Router-Freigabe aktuell, sperrt abgelaufene Zugänge, prüft Verbindungen und Updates
 und meldet Probleme gebündelt. Dazu Tailscale (mit Headscale), ZeroTier und NetBird im Blick.
 
-[English](README.md) · Eine offizielle [Hostwerk](https://github.com/Passimoritz/hostwerk-public) Erweiterung (SDK 2.7, native Erweiterung)
+[English](README.md) · Offizielle [Hostwerk](https://github.com/Passimoritz/hostwerk-public)-Erweiterung (native Erweiterung, ab Hostwerk 2.11)
+
+![Bildschirmfoto](docs/screenshot.de.png)
 
 ## Was sie kann
 
