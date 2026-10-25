@@ -79,6 +79,7 @@ export async function loadServices() {
   const o = await get('/overview');
   const out = [];
   const add = (xs, kind) => { for (const s of xs || []) if (s && Number.isInteger(s.port) && !out.some((x) => x.port === s.port)) out.push({ port: s.port, name: s.name || s.id, kind }); };
-  add(o.web, 'web'); add(o.minecraft, 'minecraft'); add(o.apps, 'app'); add(o.games, 'game'); add(o.db, 'db');
+  add(o.web, 'web'); add(o.apps, 'app'); add(o.db, 'db');
+  for (const k of Object.values(o.kinds || {})) add(k.items, k.kind); // Dienst-Arten der Erweiterungen (Minecraft, Spiele-Server …)
   return out;
 }

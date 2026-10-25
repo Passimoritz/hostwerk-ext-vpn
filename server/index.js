@@ -56,6 +56,7 @@ function activate(host) {
     t: host.t, notify, watcher: typeof host.watcher === 'function' ? (w) => host.watcher(w) : null, timers: !process.env.HW_TEST,
   });
   host.provide('vpn', svc);
+  if (typeof host.contribute === 'function') host.contribute('clickguard', { block: [/^\/vpn(\/|$)/] }); // Klick-Test: VPN wirkt außerhalb des Test-Ordners
   const r = host.router;
   const wrap = (fn) => async (req, res) => {
     try { await fn(req, res); } catch (e) {
