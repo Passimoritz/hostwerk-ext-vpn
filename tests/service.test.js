@@ -433,3 +433,22 @@ test('other VPNs: Tailscale devices, exit node and subnets, Headscale, ZeroTier 
   assert.deepStrictEqual(Object.keys(o), ['platform', 'tailscale', 'headscale', 'zerotier', 'netbird']);
   assert.ok(f.calls.elevated.length === 0, 'reading never asks for admin rights');
 });
+
+test('1.3: the address from outside for Go live → Online (live.addresses) – only from the own state', () => {
+  const { svc } = service();
+  assert.deepStrictEqual(svc.addresses(), [], 'nothing stored yet → no entry (and no state file created)');
+  const s = svc.load();
+  s.settings.endpoint = 'home.example.org'; s.settings.port = 51820; s.wantRunning = true;
+  s.peers = [{ id: 'a', person: 'Ann', enabled: true }, { id: 'b', person: 'Bob', enabled: false }];
+  svc.save(s);
+  let a = svc.addresses();
+  assert.strictEqual(a.length, 1);
+  assert.strictEqual(a[0].label, 'home.example.org:51820');
+  assert.strictEqual(a[0].kind, 'vpn'); assert.strictEqual(a[0].state, 'ok'); assert.strictEqual(a[0].href, '#/live/zugriff/vpn');
+  assert.match(a[0].detail, /WireGuard · 1 accesses/);
+  s.health = { at: 1, issues: [{ id: 'endpoint', level: 'warn', title: 'Your public IP has changed' }], seen: [] }; s.settings.endpoint = '2001:db8::1'; svc.save(s);
+  a = svc.addresses();
+  assert.strictEqual(a[0].label, '[2001:db8::1]:51820'); assert.strictEqual(a[0].state, 'warn'); assert.match(a[0].detail, /public IP has changed/);
+  s.wantRunning = false; svc.save(s);
+  assert.strictEqual(svc.addresses()[0].state, 'off');
+});

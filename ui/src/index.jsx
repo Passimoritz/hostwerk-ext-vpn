@@ -53,7 +53,7 @@ function SettingsForm({ st, onClose, onSaved }) {
             </div>
           </Field>
         )}
-        {f.endpointMode === 'dyndns' && (st.dyndns ? <span className="small">{t('Devices use {name} – the router extension keeps it up to date.', { name: st.dyndns })}</span> : <Callout kind="info" dismissible={false}>Set up DynDNS in “Router & port forwarding” first (Go live → Router).</Callout>)}
+        {f.endpointMode === 'dyndns' && (st.dyndns ? <span className="small">{t('Devices use {name} – the router extension keeps it up to date.', { name: st.dyndns })}</span> : <Callout kind="info" dismissible={false}>Set up DynDNS in “Router & port forwarding” first (Go live → Online → Router).</Callout>)}
         {f.endpointMode === 'dns' && (
           <Field label="Name at your domain" hint="e.g. vpn.example.com – Hostwerk sets its A/AAAA entry at your DNS provider and updates it when your IP changes.">
             <input className="input mono" value={f.endpoint} onChange={(e) => set('endpoint', e.target.value)} placeholder="vpn.example.com" />
@@ -348,13 +348,23 @@ function VpnTile() {
   );
 }
 
+/** Livebetrieb → Zugriff → VPN (SDK 3.11): die ganze Seite ohne ihren Titel – der Abschnitt nennt ihn schon, die Knöpfe bleiben */
+function VpnSection() {
+  return <div className="ext-embedded"><VpnPage /></div>;
+}
+
 export default {
   pages: { main: VpnPage },
+  // Hostwerk mit SDK 3.11: Abschnitt in Livebetrieb → Zugriff (#/live/zugriff/vpn)
+  sections: {
+    'live.zugriff': [{ id: 'vpn', title: 'VPN', icon: Shield, Component: VpnSection, order: 40 }],
+  },
   slots: {
     // Seit Hostwerk 3.0 (SDK 3.2) ohne eigenen Seitenleisten-Eintrag ("nav": false) – die ganze Seite als Reiter im passenden Bereich;
     // Hostwerk blendet dabei ihren Titel aus (Reiter + Herkunftszeile sagen schon, was es ist), die Knöpfe bleiben
-    // Livebetrieb → Erreichbar machen, hinter „Fernzugriff“
-    'live.tabs': [{ id: 'vpn', title: 'VPN', icon: Shield, Component: VpnPage, group: 'erreichbar', after: 'fernzugriff', order: 40 }],
+    // Ältere Hostwerk (vor SDK 3.11): Livebetrieb → Erreichbar machen, hinter „Fernzugriff“. fallback: true – Hostwerk 3.11
+    // und neuer lassen den Reiter weg (Abschnitt oben), ältere zeigen ihn wie bisher.
+    'live.tabs': [{ id: 'vpn', title: 'VPN', icon: Shield, Component: VpnPage, group: 'erreichbar', after: 'fernzugriff', order: 40, fallback: true }],
     'dashboard.tiles': [{ id: 'state', title: 'VPN', icon: Shield, size: 'third', Component: VpnTile }],
   },
 };

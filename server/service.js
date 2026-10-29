@@ -86,6 +86,22 @@ class VpnService {
   }
 
   /* ---------------- Zustand ---------------- */
+  /**
+   * SDK 3.11: die Adresse von außen für Livebetrieb → Online (host.contribute('live.addresses')) – nur aus dem eigenen
+   * Stand (keine Abfrage von WireGuard oder Netz). Ohne eingetragene Adresse von außen gibt es keinen Eintrag.
+   */
+  addresses() {
+    if (!fs.existsSync(this.file())) return [];
+    const s = this.load();
+    const ep = s.settings.endpoint;
+    if (!ep) return [];
+    const bad = (s.health.issues || []).filter((i) => i.level !== 'info');
+    const state = !s.wantRunning ? 'off' : bad.some((i) => i.level === 'err') ? 'err' : bad.length ? 'warn' : 'ok';
+    const label = `${net.isIPv6(ep) ? `[${ep}]` : ep}:${s.settings.port}`;
+    const detail = ['WireGuard', this.t('{n} accesses', { n: s.peers.filter(W.active).length }), bad.length ? bad[0].title : null].filter(Boolean).join(' · ');
+    return [{ label, kind: 'vpn', state, detail, href: '#/live/zugriff/vpn' }];
+  }
+
   async status() {
     const s = this.load();
     const det = await this.sys.detect();

@@ -57,6 +57,8 @@ function activate(host) {
   });
   host.provide('vpn', svc);
   if (typeof host.contribute === 'function') host.contribute('clickguard', { block: [/^\/vpn(\/|$)/] }); // Klick-Test: VPN wirkt außerhalb des Test-Ordners
+  // SDK 3.11: die VPN-Adresse von außen in Livebetrieb → Online – ältere Hostwerk-Versionen kennen die Art nicht und werfen
+  if (typeof host.contribute === 'function') { try { host.contribute('live.addresses', { list: () => svc.addresses() }); } catch { /* older Hostwerk */ } }
   const r = host.router;
   const wrap = (fn) => async (req, res) => {
     try { await fn(req, res); } catch (e) {

@@ -177,7 +177,7 @@
   "Or start it in the terminal with sudo wg-quick up and the file.": "Oder im Terminal mit sudo wg-quick up und der Datei starten.",
   "Install a WireGuard app for this device (wireguard.com/install).": "Eine WireGuard-App für dieses Gerät installieren (wireguard.com/install).",
   "Scan the QR code or import the file.": "QR-Code scannen oder die Datei importieren.",
-  "Set up DynDNS in “Router & port forwarding” first (Go live → Router).": "Richte zuerst DynDNS in „Router & Portfreigaben“ ein (Livebetrieb → Router).",
+  "Set up DynDNS in “Router & port forwarding” first (Go live → Online → Router).": "Richte zuerst DynDNS in „Router & Portfreigaben“ ein (Livebetrieb → Online → Router).",
   "Runs by itself": "Läuft von selbst",
   "Forward the UDP port in the router while the VPN runs (and repair it)": "UDP-Port im Router freigeben, solange das VPN läuft (und reparieren)",
   "Check daily whether a new WireGuard version is out (official source)": "Täglich nach einer neuen WireGuard-Version schauen (offizielle Quelle)",

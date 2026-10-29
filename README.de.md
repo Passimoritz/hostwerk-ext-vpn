@@ -13,7 +13,7 @@ und meldet Probleme gebündelt. Dazu Tailscale (mit Headscale), ZeroTier und Net
 
 ## Was sie kann
 
-- **Wo:** Livebetrieb → Erreichbar machen → VPN und Übersichtskachel – seit 1.2.0 ohne eigenen Seitenleisten-Eintrag; die ganze Seite bleibt unter Erweiterungen → Öffnen
+- **Wo:** Livebetrieb → Zugriff → VPN (ältere Hostwerk: Erreichbar machen → VPN) und Übersichtskachel – seit 1.2.0 ohne eigenen Seitenleisten-Eintrag; die ganze Seite bleibt unter Erweiterungen → Öffnen
 - **Zustand oben:** läuft oder aus, Adresse von außen, Port im Router, WireGuard-Version, was von selbst läuft – und
   Befunde mit einem Knopf, der sie behebt (Starten, Freigeben, Einstellungen …)
 - **Neuer Zugang in vier Schritten:** Wer → welches Gerät (Android, iPhone/iPad, Windows, Mac, Linux) → was darf er und
@@ -43,7 +43,7 @@ Alle 15 Minuten (und bei *Jetzt alles prüfen*) erledigt Hostwerk von selbst, wa
 | Schlüssel-Alter (optional) | Erinnerung nach 6, 12 oder 24 Monaten |
 
 Neue Probleme kommen als **eine** Benachrichtigung (eigener Schalter unter Einstellungen → Benachrichtigungen, ab
-Hostwerk 2.12), der Zustand steht in der Wächter-Liste (Livebetrieb → Wächter) und in der Selbstwartung. Reine Hinweise
+Hostwerk 2.12), der Zustand steht in der Wächter-Liste (Livebetrieb → Überwachung → Wächter) und in der Selbstwartung. Reine Hinweise
 lösen nie eine Benachrichtigung aus. Nie automatisch: Starten, Stoppen und neue Schlüssel – das braucht dich
 (Administrator-Abfrage, neue Datei fürs Gerät).
 

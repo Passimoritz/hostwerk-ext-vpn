@@ -1,3 +1,8 @@
+## 1.3.0
+
+- Go live in five areas (Hostwerk with SDK 3.11): the VPN is a section in Go live → Access (#/live/zugriff/vpn); older Hostwerk versions keep the tab under “Make reachable”. / Livebetrieb in fünf Bereichen (Hostwerk mit SDK 3.11): Das VPN ist ein Abschnitt unter Livebetrieb → Zugriff (#/live/zugriff/vpn); ältere Hostwerk-Versionen behalten den Reiter unter „Erreichbar machen“.
+- The VPN address from outside (name or IP with port) appears in Go live → Online next to Hostwerk’s own addresses, with state and number of accesses. / Die VPN-Adresse von außen (Name oder IP mit Port) steht unter Livebetrieb → Online neben Hostwerks eigenen Adressen, mit Zustand und Zahl der Zugänge.
+
 ## 1.2.2
 
 - New animated icon and banner in the common Hostwerk style (isometric block). / Neues animiertes Symbol und Banner im gemeinsamen Hostwerk-Stil (isometrischer Block).

@@ -13,7 +13,7 @@ and updates and reports problems in one go. Plus Tailscale (with Headscale), Zer
 
 ## What it does
 
-- **Where:** Go live → Make reachable → VPN and the dashboard tile – no own sidebar entry since 1.2.0; the full page stays under Extensions → Open
+- **Where:** Go live → Access → VPN (older Hostwerk: Make reachable → VPN) and the dashboard tile – no own sidebar entry since 1.2.0; the full page stays under Extensions → Open
 - **State at the top:** running or off, address from outside, port in the router, WireGuard version, what runs by itself
   – and findings with a button that fixes them (start, forward, settings …)
 - **New access in four steps:** who → which device (Android, iPhone/iPad, Windows, Mac, Linux) → what it may reach and
@@ -42,7 +42,7 @@ Every 15 minutes (and on *Check everything now*) Hostwerk does by itself what wo
 | Key age (optional) | reminder after 6, 12 or 24 months |
 
 New problems arrive as **one** notification (own switch under Settings → Notifications, Hostwerk 2.12+), the state is in
-the watcher list (Go live → Watchers) and in self-maintenance. Hints alone never send a notification.
+the watcher list (Go live → Monitoring → Watchers) and in self-maintenance. Hints alone never send a notification.
 Never automatic: starting, stopping and new keys – they need you (administrator prompt, new file for the device).
 
 ## How it works
