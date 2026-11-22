@@ -38,6 +38,14 @@ function parseSubnet(s) {
   return { base: m[1], prefix: 24 };
 }
 
+/** Überschneiden sich zwei IPv4-Netze „a.b.c.d/n“? */
+function cidrOverlap(a, b) {
+  const [ia, pa] = a.split('/'); const [ib, pb] = b.split('/');
+  const p = Math.min(Number(pa), Number(pb));
+  const mask = p ? (~0 << (32 - p)) >>> 0 : 0;
+  return ((ipToInt(ia) ^ ipToInt(ib)) & mask) === 0;
+}
+
 /** Beliebiges IPv4-Netz "192.168.178.0/24" prüfen (für das Heimnetz). */
 function checkCidr(s) {
   const m = /^(\d+\.\d+\.\d+\.\d+)\/(\d{1,2})$/.exec(String(s || '').trim());
@@ -72,11 +80,14 @@ function settings(input = {}, platform = process.platform) {
   const endpoint = checkEndpoint(s.endpoint);
   // Eigener Name über die DNS-Erweiterung: muss ein Name sein (keine IP) – das VPN hält dessen A/AAAA-Eintrag aktuell
   if (s.endpointMode === 'dns' && (!endpoint || net.isIP(endpoint))) throw bad('For your own name enter a host name of your domain, e.g. vpn.example.com.');
+  const lanSubnet = s.scope === 'lan' ? checkCidr(s.lanSubnet) : (s.lanSubnet ? checkCidr(s.lanSubnet) : '');
+  // Heimnetz und VPN-Netz dürfen sich nicht überschneiden – sonst weiß der PC nicht, wohin eine Antwort gehört
+  if (s.scope === 'lan' && lanSubnet && cidrOverlap(lanSubnet, String(s.subnet).trim())) throw bad('The VPN network overlaps your home network – choose another one, e.g. 10.66.66.0/24.');
   const keepalive = Number(s.keepalive);
   const rotate = Number(s.rotateMonths);
   return {
     port, subnet: String(s.subnet).trim(), endpoint, dns: dns.join(', '), scope: s.scope,
-    lanSubnet: s.scope === 'lan' ? checkCidr(s.lanSubnet) : (s.lanSubnet ? checkCidr(s.lanSubnet) : ''),
+    lanSubnet,
     keepalive: Number.isInteger(keepalive) && keepalive >= 0 && keepalive <= 600 ? keepalive : DEFAULTS.keepalive,
     endpointMode: s.endpointMode, autoForward: s.autoForward !== false, rotateMonths: [0, 6, 12, 24].includes(rotate) ? rotate : 0, updateCheck: s.updateCheck !== false,
   };
@@ -104,7 +115,8 @@ function peerOptions(b = {}, platform = process.platform, old = {}, now = Date.n
   let expires = b.expires !== undefined ? b.expires : (old.expires === undefined ? null : old.expires);
   if (expires !== null && expires !== '' && expires !== 0) {
     expires = Number(expires);
-    if (!Number.isFinite(expires) || expires < now - 60000) throw bad('The end date must be in the future.');
+    // Nur ein NEUES Ende muss in der Zukunft liegen – ein bisheriges (schon abgelaufenes) bleibt beim Ändern anderer Felder stehen
+    if (!Number.isFinite(expires) || (b.expires !== undefined && expires < now - 60000)) throw bad('The end date must be in the future.');
   } else expires = null;
   return { reach, services: reach === 'services' ? services : [], platform: plat, expires };
 }
@@ -244,7 +256,7 @@ function clientConfig({ settings: s, serverPublicKey, peer, privateKey, preshare
 /** Dateiname für die Geräte-Konfiguration (WireGuard nimmt ihn als Tunnelnamen: höchstens 32 Zeichen, a–z 0–9 _ = + . -). */
 function fileName(peer) {
   const base = `hw-${peer.person}${peer.device ? `-${peer.device}` : ''}`.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/ß/g, 'ss').replace(/[^a-z0-9_=+.-]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-  return `${base.slice(0, 28) || 'hostwerk'}.conf`;
+  return `${base.slice(0, 28).replace(/[-.]+$/, '') || 'hostwerk'}.conf`; // nach dem Kürzen kein „-“ oder „.“ am Ende
 }
 
 module.exports = {

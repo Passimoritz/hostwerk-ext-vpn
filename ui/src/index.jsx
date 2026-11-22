@@ -63,6 +63,7 @@ function SettingsForm({ st, onClose, onSaved }) {
           <Field label="UDP port" hint="Standard 51820 – this one port is all the router has to forward."><input className="input" inputMode="numeric" value={f.port} onChange={(e) => set('port', e.target.value)} /></Field>
           <Field label="VPN network" hint="Private network for the VPN; this PC gets .1"><input className="input mono" value={f.subnet} onChange={(e) => set('subnet', e.target.value)} /></Field>
         </div>
+        {st.peers.length > 0 && ['port', 'subnet', 'endpoint', 'dns'].some((k) => String(f[k]).trim() !== String(st.settings[k])) && <Callout kind="info" dismissible={false} title="New files for all devices">Port, VPN network, address and DNS are in every device configuration – hand over the configurations again after saving.</Callout>}
         <Field label="“Home only” means">
           <Seg options={[{ id: 'host', label: 'Only this PC' }, ...(st.lanOk ? [{ id: 'lan', label: 'This PC and the home network' }] : [])]} value={f.scope} onChange={(v) => set('scope', v)} />
         </Field>

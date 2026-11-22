@@ -37,6 +37,8 @@ function ReachPick({ st, f, set }) {
     { id: 'full', icon: Globe2, title: 'All traffic through home', text: 'The whole internet traffic of the device goes through your connection – handy on public Wi-Fi.', ok: st.fullOk, why: 'Needs Linux on this PC (forwarding and NAT). On Windows choose “Home only”.' },
     { id: 'services', icon: Boxes, title: 'Only certain services', text: 'The device reaches only the ports you pick below – nothing else on this PC.', ok: st.servicesOk },
   ];
+  // Gewählte Dienste, die es nicht mehr gibt (Port geändert, Dienst gelöscht), trotzdem zeigen – sonst lassen sie sich nicht abwählen
+  const shown = svcs ? [...svcs, ...f.services.filter((x) => !svcs.some((s) => s.port === x.port)).map((x) => ({ port: x.port, name: x.name || String(x.port) }))] : null;
   const toggle = (s) => { const has = f.services.some((x) => x.port === s.port); set('services', has ? f.services.filter((x) => x.port !== s.port) : [...f.services, { port: s.port, name: s.name }]); };
   return (
     <div className="stack">
@@ -50,9 +52,9 @@ function ReachPick({ st, f, set }) {
       </div>
       {f.reach === 'services' && (
         <Field label="Services">
-          {!svcs ? <Loading text="Loading services …" /> : !svcs.length ? <span className="small muted">No service with a port yet – create one in Hostwerk first.</span> : (
+          {!shown ? <Loading text="Loading services …" /> : !shown.length ? <span className="small muted">No service with a port yet – create one in Hostwerk first.</span> : (
             <div className="vpn-svc-list">
-              {svcs.map((s) => <label key={s.port} className="check small"><input type="checkbox" checked={f.services.some((x) => x.port === s.port)} onChange={() => toggle(s)} />{s.name} <span className="muted mono">{s.port}</span></label>)}
+              {shown.map((s) => <label key={s.port} className="check small"><input type="checkbox" checked={f.services.some((x) => x.port === s.port)} onChange={() => toggle(s)} />{s.name} <span className="muted mono">{s.port}</span></label>)}
             </div>
           )}
         </Field>
@@ -91,7 +93,10 @@ export function NewAccess({ st, onClose, onDone }) {
   const members = useApi(st.team ? '/vpn/members' : null, [], { live: false, poll: false });
   const set = (k, v) => setF((x) => ({ ...x, [k]: v }));
   const pickMember = (id) => { const m = (members.data || []).find((x) => x.id === id); setF((x) => ({ ...x, member: id, person: m ? m.name : x.person })); };
-  const canNext = step === 0 ? !!f.person.trim() : step === 1 ? !!f.platform : step === 2 ? (f.reach !== 'services' || f.services.length > 0) && (f.end !== 'date' || !!f.date) && !!f.endpoint.trim() : true;
+  // Same person + device already has an access: say so in step 1, not only when creating (the list is loaded already)
+  const low = (x) => String(x || '').trim().toLowerCase();
+  const dup = !!f.person.trim() && (st.peers || []).some((p) => low(p.person) === low(f.person) && low(p.device) === low(f.device));
+  const canNext = step === 0 ? !!f.person.trim() && !dup : step === 1 ? !!f.platform : step === 2 ? (f.reach !== 'services' || f.services.length > 0) && (f.end !== 'date' || !!f.date) && !!f.endpoint.trim() : true;
   const create = async () => {
     setBusy(true);
     try {
@@ -100,6 +105,12 @@ export function NewAccess({ st, onClose, onDone }) {
       setCreated(p); setStep(3); onDone();
     } catch (e) { toast.error(e); }
     setBusy(false);
+  };
+  // Enter in a text field = Next (in the last step: create) – faster by keyboard
+  const onKey = (e) => {
+    if (e.key !== 'Enter' || e.defaultPrevented || e.target.tagName !== 'INPUT' || ['checkbox', 'radio'].includes(e.target.type) || busy || !canNext) return;
+    e.preventDefault();
+    if (step < 2) setStep(step + 1); else if (step === 2) create();
   };
   const footer = (
     <>
@@ -116,7 +127,7 @@ export function NewAccess({ st, onClose, onDone }) {
         {STEPS.map((s, i) => <li key={s} className={i === step ? 'now' : i < step ? 'done' : ''} aria-current={i === step ? 'step' : undefined}><span className="vpn-step-n" aria-hidden="true">{i < step ? <Check size={12} /> : i + 1}</span>{s}</li>)}
       </ol>
       {step === 0 && (
-        <div className="stack">
+        <div className="stack" onKeyDown={onKey}>
           {st.team && (members.data || []).length > 0 && (
             <Field label="Team member" hint="Optional – links the access to a member of “Team & roles”.">
               <select className="select" value={f.member} onChange={(e) => pickMember(e.target.value)}>
@@ -127,11 +138,12 @@ export function NewAccess({ st, onClose, onDone }) {
           )}
           <Field label="Name"><input className="input" value={f.person} onChange={(e) => set('person', e.target.value)} placeholder="e.g. Lena" autoFocus /></Field>
           <Field label="Device name (optional)" hint="One access per device – e.g. phone and laptop separately."><input className="input" value={f.device} onChange={(e) => set('device', e.target.value)} placeholder="e.g. phone" /></Field>
+          {dup && <Callout kind="warn" dismissible={false}>{t('{name} already has an access for this device – give the device a name (e.g. “laptop”).', { name: f.person.trim() })}</Callout>}
         </div>
       )}
       {step === 1 && <div className="stack"><span className="small muted">Which device will use the access? Hostwerk then shows the right way to set it up.</span><PlatformPick value={f.platform} onChange={(v) => set('platform', v)} /></div>}
       {step === 2 && (
-        <div className="stack">
+        <div className="stack" onKeyDown={onKey}>
           <ReachPick st={st} f={f} set={set} />
           {!st.settings.endpoint && <EndpointAsk st={st} value={f.endpoint} onChange={(v) => set('endpoint', v)} />}
         </div>
@@ -150,9 +162,12 @@ export function NewAccess({ st, onClose, onDone }) {
 export function AccessForm({ st, peer, onClose, onSaved }) {
   const [f, setF] = useState({ person: peer.person, device: peer.device, platform: peer.platform, reach: peer.reach, services: peer.services || [], end: peer.expires ? 'date' : 'never', date: dateOf(peer.expires), endpoint: st.settings.endpoint });
   const set = (k, v) => setF((x) => ({ ...x, [k]: v }));
+  // Ende nur mitschicken, wenn es geändert wurde – sonst würde z. B. Umbenennen ein abgelaufenes Ende auf „heute 23:59“
+  // setzen (und den gesperrten Zugang still wieder freigeben) bzw. an einem Ende von gestern scheitern
+  const endChanged = f.end !== (peer.expires ? 'date' : 'never') || (f.end === 'date' && f.date !== dateOf(peer.expires));
   const save = async () => {
     try {
-      const r = await put(`/vpn/peers/${enc(peer.id)}`, { person: f.person, device: f.device, platform: f.platform, reach: f.reach, services: f.services, expires: endsAt(f.end, f.date) });
+      const r = await put(`/vpn/peers/${enc(peer.id)}`, { person: f.person, device: f.device, platform: f.platform, reach: f.reach, services: f.services, ...(endChanged ? { expires: endsAt(f.end, f.date) } : {}) });
       toast.success('Saved'); onSaved(r); onClose();
     } catch (e) { toast.error(e); }
   };

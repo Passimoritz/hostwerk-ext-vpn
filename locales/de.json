@@ -374,5 +374,9 @@
   "Keeping your own name up to date needs the extension “DNS management”.": "Den eigenen Namen aktuell halten braucht die Erweiterung „DNS-Verwaltung“.",
   "VPN": "VPN",
   "How to install it …": "So installierst du es …",
-  "Install WireGuard": "WireGuard installieren"
+  "Install WireGuard": "WireGuard installieren",
+  "New files for all devices": "Neue Dateien für alle Geräte",
+  "Port, VPN network, address and DNS are in every device configuration – hand over the configurations again after saving.": "Port, VPN-Netz, Adresse und DNS stehen in jeder Geräte-Konfiguration – gib die Konfigurationen nach dem Speichern neu weiter.",
+  "The VPN network overlaps your home network – choose another one, e.g. 10.66.66.0/24.": "Das VPN-Netz überschneidet sich mit deinem Heimnetz – nimm ein anderes, z. B. 10.66.66.0/24.",
+  "{name} already has an access for this device – give the device a name (e.g. “laptop”).": "{name} hat für dieses Gerät schon einen Zugang – gib dem Gerät einen Namen (z. B. „Laptop“)."
 }

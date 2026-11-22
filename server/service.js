@@ -27,6 +27,8 @@ const M = require('./maint');
 const { installGuide } = require('./system');
 
 const bad = (status, text, vars) => Object.assign(new Error(text), { status, vars });
+/** Name/Gerät: eine Zeile (Zeilenumbrüche und Steuerzeichen → Leerzeichen), höchstens 40 Zeichen */
+const oneLine = (v) => String(v || '').replace(/[\u0000-\u001f\u007f]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 40);
 const OWNER = 'vpn';
 const LABEL = 'WireGuard (VPN)';
 
@@ -145,6 +147,11 @@ class VpnService {
     // Adresse aus der Router-Erweiterung: ihr DynDNS-Name ist die Adresse
     if (s.settings.endpointMode === 'dyndns') { const d = this.ctx.router && this.ctx.router.dyn && this.ctx.router.dyn.domain; if (!d) throw bad(409, 'There is no DynDNS name in “Router & port forwarding” yet.'); s.settings.endpoint = W.checkEndpoint(d); }
     if (s.settings.endpointMode === 'dns' && !(this.ctx.dns && typeof this.ctx.dns.set === 'function')) throw bad(409, 'Keeping your own name up to date needs the extension “DNS management”.');
+    // Neues VPN-Netz: Zugänge ziehen mit um (gleiche Endziffer) – sonst lägen sie außerhalb des Netzes dieses PCs
+    if (before.subnet !== s.settings.subnet) {
+      const base = W.parseSubnet(s.settings.subnet).base;
+      for (const p of s.peers) p.address = `${base}.${String(p.address).split('.').pop()}`;
+    }
     const tunnelRelevant = ['port', 'subnet', 'scope', 'lanSubnet'].some((k) => before[k] !== s.settings[k]);
     if (tunnelRelevant) s.needsRestart = true;
     if (s.settings.endpoint !== before.endpoint) { s.endpointCheck = null; s.dnsState = null; }
@@ -170,8 +177,8 @@ class VpnService {
   /* ---------------- Zugänge ---------------- */
   addPeer(b = {}) {
     const s = this.load();
-    const person = String(b.person || '').trim().slice(0, 40);
-    const device = String(b.device || '').trim().slice(0, 40);
+    const person = oneLine(b.person);
+    const device = oneLine(b.device);
     if (!person) throw bad(400, 'Who is the access for? Enter a name.');
     const member = b.member ? this.members().find((m) => m.id === b.member) : null;
     if (b.member && !member) throw bad(404, 'Team member not found');
@@ -192,8 +199,10 @@ class VpnService {
   peer(s, id) { const p = s.peers.find((x) => x.id === id); if (!p) throw bad(404, 'Access not found'); return p; }
   updatePeer(id, b = {}) {
     const s = this.load(); const p = this.peer(s, id);
-    if (b.person !== undefined) { const n = String(b.person).trim().slice(0, 40); if (!n) throw bad(400, 'Who is the access for? Enter a name.'); p.person = n; }
-    if (b.device !== undefined) p.device = String(b.device).trim().slice(0, 40);
+    if (b.person !== undefined) { const n = oneLine(b.person); if (!n) throw bad(400, 'Who is the access for? Enter a name.'); p.person = n; }
+    if (b.device !== undefined) p.device = oneLine(b.device);
+    // Wie beim Anlegen: je Person und Gerät nur ein Zugang (sonst zwei gleich benannte Zeilen und Dateien)
+    if (s.peers.some((x) => x !== p && x.person.toLowerCase() === p.person.toLowerCase() && (x.device || '').toLowerCase() === (p.device || '').toLowerCase())) throw bad(409, 'This person already has an access for this device – give the device a name.');
     if (b.enabled !== undefined) p.enabled = !!b.enabled;
     if (['reach', 'services', 'platform', 'expires'].some((k) => b[k] !== undefined)) {
       Object.assign(p, W.peerOptions(b, this.platform, p));
@@ -296,6 +305,7 @@ class VpnService {
   async stop({ confirm } = {}) {
     if (confirm !== true) throw bad(428, 'Stopping needs your confirmation – WireGuard asks for administrator rights.');
     const det = await this.sys.detect();
+    if (!det.installed) throw bad(409, 'WireGuard is not installed.'); // ohne den Hinweis „Befehl selbst ausführen“ – den gibt es dann nicht
     const s = this.load();
     // Firewall-Regeln genau so wegräumen, wie sie beim Start angelegt wurden (Namen gemerkt)
     const fw = (s.firewall || []).map((name) => ({ cmd: 'netsh', args: ['advfirewall', 'firewall', 'delete', 'rule', name] }));

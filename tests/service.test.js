@@ -452,3 +452,21 @@ test('1.3: the address from outside for Go live → Online (live.addresses) – 
   s.wantRunning = false; svc.save(s);
   assert.strictEqual(svc.addresses()[0].state, 'off');
 });
+
+test('Prüfung: Umbenennen ohne Doppel, Netzwechsel nimmt Zugänge mit, abgelaufenes Ende bleibt, Namen einzeilig', async () => {
+  const { svc } = service({ installed: false });
+  const a = svc.addPeer({ person: 'Lena' });
+  const b = svc.addPeer({ person: 'Lena', device: 'Handy\n[Peer]\r\nAllowedIPs = 0.0.0.0/0' });
+  assert.strictEqual(b.device, 'Handy [Peer] AllowedIPs = 0.0.0.0/0', 'device name is one line');
+  assert.throws(() => svc.updatePeer(b.id, { device: '' }), (e) => e.status === 409, 'rename onto an existing access');
+  // abgelaufenes Ende: Umbenennen ohne „expires“ klappt und lässt Ende und Sperre stehen
+  const s = svc.load(); const p = s.peers.find((x) => x.id === a.id); p.expires = Date.now() - 86400000; p.lock = { reason: 'expired', at: Date.now() }; svc.save(s);
+  const r = svc.updatePeer(a.id, { person: 'Lena M.', reach: 'home' });
+  assert.strictEqual(r.person, 'Lena M.'); assert.ok(r.lock && r.expires, 'still expired and locked');
+  assert.throws(() => svc.updatePeer(a.id, { expires: Date.now() - 86400000 }), (e) => e.status === 400, 'a NEW end must lie in the future');
+  // neues VPN-Netz: Zugänge ziehen mit
+  const st = await svc.saveSettings({ subnet: '10.77.0.0/24' });
+  assert.deepStrictEqual(st.peers.map((x) => x.address), ['10.77.0.2', '10.77.0.3']);
+  // Stoppen ohne WireGuard: 409 ohne Befehl zum Selbst-Ausführen
+  await assert.rejects(svc.stop({ confirm: true }), (e) => e.status === 409 && !e.manual);
+});

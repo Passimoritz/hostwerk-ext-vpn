@@ -30,6 +30,7 @@ test('settings: defaults, checks and the home network only on Linux', () => {
   no({ dns: 'dns.google' }, /IP addresses/);
   no({ scope: 'lan', lanSubnet: '192.168.178.0/24' }, /needs Linux/, 'win32');
   no({ scope: 'lan', lanSubnet: 'x' }, /home network/);
+  no({ scope: 'lan', lanSubnet: '10.0.0.0/8' }, /overlaps/, 'linux');
   assert.strictEqual(W.settings({ scope: 'lan', lanSubnet: '192.168.178.7/24' }, 'linux').lanSubnet, '192.168.178.0/24');
   for (const ok of ['172.20.1.0/24', '192.168.50.0/24', '100.100.3.0/24']) assert.strictEqual(W.settings({ subnet: ok }).subnet, ok);
 });
@@ -75,6 +76,7 @@ test('file name: usable as WireGuard tunnel name', () => {
   assert.strictEqual(W.fileName({ person: 'Jörg Müßig', device: 'Laptop (Arbeit)' }), 'hw-jorg-mussig-laptop-arbeit.conf');
   assert.ok(W.fileName({ person: 'x'.repeat(80) }).length <= 33);
   assert.strictEqual(W.fileName({ person: '!!!' }), 'hw.conf');
+  assert.strictEqual(W.fileName({ person: 'x'.repeat(24), device: 'Handy' }), 'hw-' + 'x'.repeat(24) + '.conf', 'no dash left after cutting');
 });
 
 test('own name through the DNS extension must be a host name; maintenance options are clamped', () => {
